@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fetch API with Loading</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Fetch API with Loading Spinner</h1>
+    <!-- Loading Spinner -->
+    <div id="loading" class="spinner"></div>
+
+    <!-- Content will be inserted here -->
+    <div id="content" class="content"></div>
+  </div>
+
+  <script>
+    // Function to fetch data and display it
+    function fetchData() {
+      const loadingSpinner = document.getElementById('loading');
+      const contentDiv = document.getElementById('content');
+      
+      // Show loading spinner
+      loadingSpinner.style.display = 'block';
+      
+      fetch('https://jsonplaceholder.typicode.com/users')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Hide loading spinner
+          loadingSpinner.style.display = 'none';
+          
+          // Display the fetched data
+          contentDiv.innerHTML = `
+            <h2>User List</h2>
+            <ul>
+              ${data.map(user => `<li>${user.name} - ${user.email}</li>`).join('')}
+            </ul>
+          `;
+        })
+        .catch(error => {
+          // Hide loading spinner and show error
+          loadingSpinner.style.display = 'none';
+          contentDiv.innerHTML = `<p class="error">Failed to load data. Please try again later.</p>`;
+          console.error('Fetch error:', error);
+        });
+    }
+
+    // Fetch data when the page loads
+    window.onload = fetchData;
+  </script>
+</body>
+</html>
